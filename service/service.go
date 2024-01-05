@@ -82,7 +82,7 @@ func (cart *CartService) AddtoCart(ctx context.Context, req *pb.AddtoCartRequest
 	productRes, err := ProductClient.GetProduct(context.TODO(), &pb.GetProductByID{Id: req.ProductId})
 	if err != nil {
 		log.Println(err.Error())
-		return nil, errors.New(err.Error())
+		return nil, err
 	}
 
 	if productRes.Name == "" {
@@ -195,6 +195,8 @@ func (cart *CartService) TrasferWishlist(ctx context.Context, req *pb.CartReques
 		cartid = cart.ID
 		result = append(result, &pb.AddtoCartResponce{Product: wish, Quantity: int32(cart.Quantity)})
 	}
+
+	WishlistClient.TruncateWishlist(ctx, &pb.WishlistRequest{UserId: req.UserId})
 
 	return &pb.GetCartResponce{CartId: uint32(cartid), Products: result}, nil
 }

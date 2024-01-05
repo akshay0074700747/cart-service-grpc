@@ -20,7 +20,7 @@ func NewCartAdapter(db *gorm.DB) *CartAdapter {
 func (cart *CartAdapter) CreateCart(req entities.Cart) (entities.Cart, error) {
 
 	var res entities.Cart
-	query := "INSERT INTO carts (user_id) VALUES($1) RETURNS id,user_id"
+	query := "INSERT INTO carts (user_id) VALUES($1) RETURNING id,user_id"
 
 	tx := cart.DB.Begin()
 
@@ -107,7 +107,7 @@ func (cart *CartAdapter) DeleteCartItem(req entities.CartItems, user_id uint) er
 
 func (cart *CartAdapter) TruncateCartItems(user_id uint) (error) {
 
-	query := "DELETE FROM cart_items WHERE cart_id = (SELECT id FROM carts WHERE user_id = $1) RETURNS id,product_id,quantity"
+	query := "DELETE FROM cart_items WHERE cart_id = (SELECT id FROM carts WHERE user_id = $1) RETURNING id,product_id,quantity"
 
 	tx := cart.DB.Begin()
 
@@ -159,7 +159,7 @@ func (cart *CartAdapter) IncrementQty(req entities.CartItems, user_id uint) (ent
 func (cart *CartAdapter) DecrementQty(req entities.CartItems, user_id uint) (entities.CartItems, error) {
 
 	var res entities.CartItems
-	query := "UPDATE cart_items SET quantity = quantity - $1 WHERE product_id = $2 AND cart_id = (SELECT id FROM carts WHERE user_id = $3) RETURNS id,cart_id,product_id,quantity"
+	query := "UPDATE cart_items SET quantity = quantity - $1 WHERE product_id = $2 AND cart_id = (SELECT id FROM carts WHERE user_id = $3) RETURNING id,cart_id,product_id,quantity"
 
 	tx := cart.DB.Begin()
 
