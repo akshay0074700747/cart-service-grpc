@@ -34,12 +34,12 @@ func main() {
 
 	pb.RegisterCartServiceServer(server, servicee)
 
-	productConn, err := grpc.Dial(":50004", grpc.WithInsecure())
+	productConn, err := grpc.Dial("product-service:50004", grpc.WithInsecure())
 	if err != nil {
 		log.Println(err.Error())
 	}
 
-	wishlistConn, err := grpc.Dial(":50007", grpc.WithInsecure())
+	wishlistConn, err := grpc.Dial("wishlist-service:50007", grpc.WithInsecure())
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -53,6 +53,7 @@ func main() {
 	}
 
 	log.Printf("Cart Server is listening on port")
+	log.Println("i am running on k8s")
 
 	if err := server.Serve(listener); err != nil {
 		log.Fatal(err.Error())
